@@ -28,7 +28,7 @@ app.get('/sapquery', (req, res) => {
       }
 
       // Run the query
-      conn.exec('select CC_SOURCING_CATEGORY, SUM(PR_Total_Value) from TEST_SPACE.View_Sample_Data_Absorption2 group by CC_SOURCING_CATEGORY desc', (err, result) => {
+      conn.exec('SELECT * FROM TABLES WHERE SCHEMA_NAME = ''TEST_SPACE''', (err, result) => {
         if (err) {
           console.error('Query Error:', err);
           return res.status(500).json({ error: 'Query failed' });
