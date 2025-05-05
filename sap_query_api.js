@@ -8,7 +8,7 @@ const port = process.env.PORT || 3000; // Use Railway’s dynamic port or defaul
 app.use(express.json());
 
 // Create a route for querying SAP
-app.get('/query-sap', async (req, res) => {
+app.get('/sapquery', async (req, res) => {
   try {
     // Construct the SAP connection string from environment variables
     const connectionString = `Driver={HDBODBC};ServerNode=${process.env.address}:${process.env.port};UID=${process.env.user};PWD=${process.env.password}`;
@@ -17,7 +17,9 @@ app.get('/query-sap', async (req, res) => {
     const connection = await odbc.connect(connectionString);
 
     // Run the query (replace with your SAP table)
-    const result = await connection.query('SELECT * FROM <SAP_TABLE>'); // Replace <SAP_TABLE> with your SAP table name
+    const result = await connection.query('SELECT CURRENT_DATE FROM DUMMY'); // Replace <SAP_TABLE> with your SAP table name
+
+    console.log('Connected successfully');
 
     // Send the result as JSON response
     res.json(result);
@@ -31,7 +33,11 @@ app.get('/query-sap', async (req, res) => {
 });
 
 // Start the Express server
+app.get('/', (req, res) => {
+  res.send('SAP ODBC API is running.');
+});
+
+// Start the Express server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
-
