@@ -28,7 +28,7 @@ app.get('/sapquery', (req, res) => {
       }
 
       // Run the query
-      conn.exec('SELECT * FROM TABLES WHERE SCHEMA_NAME = ''TEST_SPACE''', (err, result) => {
+      conn.exec(`SELECT * FROM TABLES WHERE SCHEMA_NAME = 'TEST_SPACE'`, (err, result) => {
         if (err) {
           console.error('Query Error:', err);
           return res.status(500).json({ error: 'Query failed' });
