@@ -33,8 +33,6 @@ app.get('/sapquery', (req, res) => {
           console.error('Query Error:', err);
           return res.status(500).json({ error: 'Query failed' });
         }
-
-        console.log('Connecting with:', connectionParams);
         
         res.json(result);
         conn.disconnect(); // Close the connection after query
