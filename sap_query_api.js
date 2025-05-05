@@ -19,7 +19,14 @@ app.get('/sapquery', (req, res) => {
       sslValidateCertificate: 'false' // Optional: skip cert validation (e.g. for testing)
     };
 
+    const sqlQuery = req.body.query;
+
+    if (!sqlQuery) {
+      return res.status(400).json({ error: 'Missing SQL query in request body' });
+    }
+    
     console.log('Connecting with:', connectionParams);
+    console.log('SQL content:', sqlQuery);
 
     conn.connect(connectionParams, (err) => {
       if (err) {
@@ -28,7 +35,7 @@ app.get('/sapquery', (req, res) => {
       }
 
       // Run the query
-      conn.exec('SELECT CURRENT_TIMESTAMP AS CURRENT_DB_TIME FROM DUMMY;', (err, result) => {
+      conn.exec(sqlQuery, (err, result) => {
         if (err) {
           console.error('Query Error:', err);
           return res.status(500).json({ error: 'Query failed' });
