@@ -12,7 +12,7 @@ app.get('/sapquery', async (req, res) => {
   try {
     // Construct the SAP connection string from environment variables
     const connectionString = `Driver={HDBODBC};ServerNode=${process.env.address}:${process.env.port};UID=${process.env.user};PWD=${process.env.password}`;
-
+    console.log('Connection String: ',connectionString);
     // Connect to SAP using ODBC (with credentials from .env)
     const connection = await odbc.connect(connectionString);
 
