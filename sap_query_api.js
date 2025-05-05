@@ -2,44 +2,52 @@ require('dotenv').config(); // Load environment variables from .env
 const express = require('express');
 const hana = require('@sap/hana-client');
 const app = express();
-const port = process.env.PORT || 3000; // Use Railway’s dynamic port or default to 3000
+const port = process.env.PORT || 3000;
+
 const conn = hana.createConnection();
 
-// Set up body parsing middleware for handling incoming JSON requests (if necessary)
 app.use(express.json());
 
 // Create a route for querying SAP
-app.get('/sapquery', async (req, res) => {
+app.get('/sapquery', (req, res) => {
   try {
-    // Construct the SAP connection string from environment variables
-    const connectionString = `Driver={HDBODBC};ServerNode=${process.env.address}:${process.env.port};UID=${process.env.user};PWD=${process.env.password}`;
-    console.log('Connection String: ',connectionString);
+    const connectionParams = {
+      serverNode: `${process.env.address}:${process.env.port}`,
+      uid: process.env.user,
+      pwd: process.env.password
+    };
 
-    // Connect to SAP using ODBC (with credentials from .env)
-    const connection = await hana.connect(connectionString);
+    console.log('Connecting with:', connectionParams);
 
-    // Run the query (replace with your SAP table)
-    const result = await connection.query('SELECT CURRENT_DATE FROM DUMMY'); // Replace <SAP_TABLE> with your SAP table name
+    conn.connect(connectionParams, (err) => {
+      if (err) {
+        console.error('Connection Error:', err);
+        return res.status(500).json({ error: 'SAP HANA connection failed' });
+      }
 
-    console.log('Connected successfully');
+      // Run the query
+      conn.exec('SELECT CURRENT_DATE FROM DUMMY', (err, result) => {
+        if (err) {
+          console.error('Query Error:', err);
+          return res.status(500).json({ error: 'Query failed' });
+        }
 
-    // Send the result as JSON response
-    res.json(result);
-
-    // Close the connection
-    await connection.close();
+        res.json(result);
+        conn.disconnect(); // Close the connection after query
+      });
+    });
   } catch (error) {
-    console.error('Error querying SAP:', error);
+    console.error('Unexpected Error:', error);
     res.status(500).json({ error: 'Failed to query SAP' });
   }
 });
 
-// Start the Express server
+// Health check route
 app.get('/', (req, res) => {
   res.send('SAP ODBC API is running.');
 });
 
-// Start the Express server
+// Start the server
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
