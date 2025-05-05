@@ -2,7 +2,7 @@ require('dotenv').config(); // Load environment variables from .env
 const express = require('express');
 const hana = require('@sap/hana-client');
 const app = express();
-const port = process.env.PORT;
+const port = 3000;
 
 const conn = hana.createConnection();
 
