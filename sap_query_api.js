@@ -2,14 +2,14 @@ require('dotenv').config(); // Load environment variables from .env
 const express = require('express');
 const hana = require('@sap/hana-client');
 const app = express();
-const port = 3000;
+const port = process.env.PORT||3000;
 
 const conn = hana.createConnection();
 
 app.use(express.json());
 
 // Create a route for querying SAP
-app.get('/sapquery', (req, res) => {
+app.post('/sapquery', (req, res) => {
   try {
     const connectionParams = {
       serverNode: `${process.env.address}:${process.env.port}`,
