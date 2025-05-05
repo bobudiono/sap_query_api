@@ -1,8 +1,0 @@
-[phases.setup]
-nixpkgs = ["unixODBC", "gcc", "glibc"]
-
-[phases.install]
-cmds = ["npm install"]
-
-[phases.start]
-cmd = "node sap_query_api.js"
