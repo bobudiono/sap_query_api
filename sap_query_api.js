@@ -14,7 +14,9 @@ app.get('/sapquery', (req, res) => {
     const connectionParams = {
       serverNode: `${process.env.address}:${process.env.port}`,
       uid: process.env.user,
-      pwd: process.env.password
+      pwd: process.env.password,
+      encrypt: 'true',         // ✅ Required for HANA Cloud
+      sslValidateCertificate: 'false' // Optional: skip cert validation (e.g. for testing)
     };
 
     console.log('Connecting with:', connectionParams);
