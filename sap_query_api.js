@@ -4,7 +4,6 @@ const hana = require('@sap/hana-client');
 const app = express();
 const port = process.env.PORT||3000;
 
-const conn = hana.createConnection();
 
 app.use(express.json());
 
@@ -28,6 +27,8 @@ app.post('/sapquery', (req, res) => {
     console.log('Connecting with:', connectionParams);
     console.log('SQL content:', sqlQuery);
 
+    const conn = hana.createConnection();
+    
     conn.connect(connectionParams, (err) => {
       if (err) {
         console.error('Connection Error:', err);
