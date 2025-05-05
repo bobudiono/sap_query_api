@@ -10,9 +10,11 @@ RUN apt-get update && apt-get install -y \
     unzip \
     && rm -rf /var/lib/apt/lists/*
 
-# Install SAP HANA ODBC Client (Ensure you have the correct download link)
-RUN curl -L -o /tmp/saphana-client.zip "https://path.to.saphana.client.zip" && \
-    unzip /tmp/saphana-client.zip -d /tmp && \
+# Copy pre-downloaded SAP HANA ODBC client zip into the container
+COPY ./saphana-client.zip /tmp/saphana-client.zip
+
+# Install SAP HANA ODBC Client
+RUN unzip /tmp/saphana-client.zip -d /tmp && \
     cd /tmp/hana-client && \
     ./install.sh && \
     rm -rf /tmp/saphana-client.zip /tmp/hana-client
@@ -25,9 +27,9 @@ Driver=/usr/sap/hana/client/hdbodbc.so" >> /etc/odbcinst.ini
 # Optionally, add any other ODBC configurations (modify as per your actual connection details)
 RUN echo "[SAP_HANA]\n\
 Driver=HDBODBC\n\
-ServerNode=c0b24b1b-f407-49df-8dbd-e0197bc66e07.hana.prod-us10.hanacloud.ondemand.com:443\n\
-UID=TEST_SPACE#TEST_USER1\n\
-PWD=L$N-+];8Lh%;u,Y$:#zbxH]I+?Kv)n~+" >> /etc/odbc.ini
+ServerNode=$SAP_HANA_SERVER_NODE\n\
+UID=$SAP_HANA_USER_ID\n\
+PWD=$SAP_HANA_PASSWORD" >> /etc/odbc.ini
 
 # Set environment variables for ODBC
 ENV LD_LIBRARY_PATH="/usr/sap/hana/client:$LD_LIBRARY_PATH"
