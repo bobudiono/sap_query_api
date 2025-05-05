@@ -9,7 +9,7 @@ const conn = hana.createConnection();
 app.use(express.json());
 
 // Create a route for querying SAP
-app.get('/sapquery', (req, res) => {
+app.post('/sapquery', (req, res) => {
   try {
     const connectionParams = {
       serverNode: `${process.env.address}:${process.env.port}`,
