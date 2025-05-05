@@ -1,8 +1,9 @@
 require('dotenv').config(); // Load environment variables from .env
 const express = require('express');
-const odbc = require('odbc');
+const hana = require('@sap/hana-client');
 const app = express();
 const port = process.env.PORT || 3000; // Use Railway’s dynamic port or default to 3000
+const conn = hana.createConnection();
 
 // Set up body parsing middleware for handling incoming JSON requests (if necessary)
 app.use(express.json());
@@ -13,8 +14,9 @@ app.get('/sapquery', async (req, res) => {
     // Construct the SAP connection string from environment variables
     const connectionString = `Driver={HDBODBC};ServerNode=${process.env.address}:${process.env.port};UID=${process.env.user};PWD=${process.env.password}`;
     console.log('Connection String: ',connectionString);
+
     // Connect to SAP using ODBC (with credentials from .env)
-    const connection = await odbc.connect(connectionString);
+    const connection = await hana.connect(connectionString);
 
     // Run the query (replace with your SAP table)
     const result = await connection.query('SELECT CURRENT_DATE FROM DUMMY'); // Replace <SAP_TABLE> with your SAP table name
